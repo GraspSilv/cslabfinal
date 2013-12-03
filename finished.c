@@ -35,7 +35,7 @@ float blank=54321;
 float end_arb=5432;
 
 // IMPORTANT VARIABLES
-int wait=50000;
+int uwait=50000;
 int ncap=0;
 int ncells=0;
 float xcurrent=0;
@@ -199,7 +199,7 @@ void play(int grey,int color,int screen){		//reads the saver with a pause 'wait'
 			draw_screen(curr_s,grey,color);
 			gfx_flush();
 		}
-		if(grey==0){usleep(wait);}
+		if(grey==0){usleep(uwait);}
 	}
 	for(F=0;F<SCR;F++){
 		free(curr_s[F]);
@@ -537,7 +537,12 @@ void draw_new(float new[OBJ]){
 		}
 	}
 }
-int main(void){
+int main(int argc, char *argv[]){
+
+	if (argc == 1){
+		printf("Please enter the name of the file you want to write to.\n");
+		return 0;
+	}
 	usleep(1000000);
 	float xmax=1000,ymax=600;
 	gfx_open(xmax,ymax,"hey");
@@ -586,11 +591,11 @@ int main(void){
 		if(c=='a'){
 			add_stickman(curr_screen,xmax/2+xcurrent,ymax/2,50);	
 		}
-		if(c=='=' && wait<1000000){
-			wait+=25000;
+		if(c=='=' && uwait<1000000){
+			uwait+=25000;
 		}
-		if(c=='-' && wait>25000){
-			wait-=25000;
+		if(c=='-' && uwait>25000){
+			uwait-=25000;
 		}
 		if(c=='n'){
 			gfx_clear();
