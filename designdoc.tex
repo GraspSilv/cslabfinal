@@ -1,0 +1,74 @@
+\documentclass{article}
+\begin{document}
+Design Document\\
+Frank Cipollone and Jack Magiera \\
+November 22, 2013 \\
+\begin{description}
+\item[Call Graph]---------------------------------------------------------------------------------------\\
+\begin{tabular}{|l|r|}
+\hline
+Function & Calls \\
+\hline
+main & initializeLevel \\
+& performAction \\
+& calcNextScreen \\
+& drawScreen \\
+\hline
+calcNextScreen & actorLocs\\
+& updateChanges \\
+\hline
+drawScreen & drawLength \\
+& drawArb \\
+\hline
+drawArb & endCScreen \\
+\hline
+actorLocs & performAction \\
+& actorLocs \\
+\hline
+performAction & createObject \\
+\hline
+removeObject & \\
+\hline
+createObject & \\
+\hline
+\end{tabular}
+\item[Prototypes]--------------------------------------------------------------------------------------
+\begin{verbatim}
+void initializeLevel(float curScreen[SCR]);
+void performAction(char a, int p);
+void calcNextScreen(float curScreen[SCR]);
+void drawScreen(float curScreen[SCR]);
+void drawLengths(float stickman[SIZE]);
+void drawArb(float object[410]);
+void actorLocs(float curScreen[SCR]);
+void createObject(float curScreen[SCR], int num);
+void removeObject(float curScreen[SCR], int num);
+\end{verbatim}
+\item[Psuedocode]--------------------------------------------------------------
+\begin{verbatim}
+int main(void){
+    set floats xmax and ymax to boundaries of screen;
+    gfx_open();
+    initialize curScreen[SCR], with SCR being max number of items on screen;
+    initializeLevel(curScreen);
+    while(1):
+       initialize char a;
+       if (character entered):
+           performAction(a);
+       calcNextScreen(curScreen);
+       drawScreen(curScreen);
+       pause for animation;
+\end{verbatim}
+\item[General Description]-----------------------------------------------------\\
+This program will begin by initializing the level. It will read an array of 
+numbers from a file.  This array of numbers will describe all the objects
+on the screen, with each object separated by an indicator.  All the other
+functions change this array.  drawScreen reads this array and draws the
+screen that it describes, then there is a pause for the animation.  Different
+functions will change the velocities, accelerations, or positions of the
+various objects.  There will also be some preset motions that can be called
+with performAction, so that when the user types 'd' the user will walk right,
+and when the user type 'a' the user will walk left.  calcNextScreen will
+put all of this together to change the screen for the next stage of animation.
+\end{description}
+\end{document}
