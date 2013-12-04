@@ -617,18 +617,24 @@ int main(int argc, char *argv[]){
 			xcurrent-=500;
 		}
 		if(c=='f'){
-			FILE *walker;
-			if((walker=fopen("Walk.mot","w"))==NULL){
-				printf("File Could not be opened");
+			if(ncap==0){
+				
+				//copy all of curr_screen into a .lev file
+				
 			}else{
-				int i,j;
-				for(j=1;j<ncap;j++){
-					for(i=0;i<OBJ;i++){
-						fprintf(walker,"%f ",saver[j*2][i]-saver[j*2-2][i]);
+				FILE *walker;
+				if((walker=fopen("Walk.mot","w"))==NULL){
+					printf("File Could not be opened");
+				}else{
+					int i,j;
+					for(j=1;j<ncap;j++){
+						for(i=0;i<OBJ;i++){
+							fprintf(walker,"%f ",saver[j*2][i]-saver[j*2-2][i]);
+						}
+						fprintf(walker,"\n");
 					}
-					fprintf(walker,"\n");
+						fclose(walker);
 				}
-				fclose(walker);
 			}
 		}
 	}
