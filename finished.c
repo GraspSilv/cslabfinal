@@ -633,7 +633,7 @@ int main(int argc, char *argv[]){
 						}
 						fprintf(walker,"\n");
 					}
-						fclose(walker);
+					fclose(walker);
 				}
 			}
 		}
