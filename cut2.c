@@ -213,8 +213,10 @@ void perform_action(char a){
 			if((walker=fopen("Walk.mot","r"))==NULL){
 				printf("file couldnt be opened");
 			}else{
+				int stop;
+				fscanf(walker,"%d ",&stop);
 				int i,j;
-				for(j=1;j<5;j++){
+				for(j=1;j<stop;j++){
 					for(i=0;i<OBJ;i++){
 						float f;
 						fscanf(walker,"%f ",&f);
@@ -236,16 +238,16 @@ void initialize_level(float *curr_screen[SCR]){
 	if((level=fopen("one.lev","r"))==NULL){
 		printf("file couldnt be opened");
 	}else{
+		int stop;
+		fscanf(level,"%d ",&stop);
 		int i,j;
-		for(j=0;j<2;j++){
+		for(j=0;j<=stop;j++){
 			for(i=0;i<OBJ;i++){
 				float f;
 				fscanf(level,"%f ",&f);
 				curr_screen[j][i]=f;
-				printf("%f ",curr_screen[j][i]);
 			}
 			fscanf(level,"\n");
-			printf("\n");
 		}
 	}	
 }

@@ -623,6 +623,7 @@ int main(int argc, char *argv[]){
 				if((level=fopen("one.lev","w"))==NULL){
 					printf("File Could not be opened");
 				}else{
+					fprintf(level,"%d ",end_cscreen(curr_screen,1,end_curr_screen));
 					int i,j;
 					for(j=0;j<=end_cscreen(curr_screen,1,end_curr_screen);j++){
 						for(i=0;i<OBJ;i++){
@@ -637,6 +638,7 @@ int main(int argc, char *argv[]){
 				if((walker=fopen("Walk.mot","w"))==NULL){
 					printf("File Could not be opened");
 				}else{
+					fprintf(walker,"%d ",ncap);
 					int i,j;
 					for(j=1;j<ncap;j++){
 						for(i=0;i<OBJ;i++){
