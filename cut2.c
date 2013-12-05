@@ -7,6 +7,8 @@
 #define SIZE 18
 #define SCR 1000
 #define OBJ 500
+#define STICKS 30
+#define max_frames 20
 
 // FUNCTIONS
 void fill(float sman[SIZE],float filled_sman[SIZE]);
@@ -19,7 +21,7 @@ void draw_screen(float *curr_screen[SCR],int spots,int color);
 void draw_width(float width, float x,float y,float nx,float ny);
 void draw_arb(float new[OBJ],int spots,int color,int screen3);
 void draw_new(float new[OBJ]);
-void perform_action(char a);
+void perform_action(float *move_holder[STICKS*max_frames],float *curr_screen[SCR],char a,int stick);
 
 // MARKERS
 float regular=12349;
@@ -28,6 +30,7 @@ float new_object=12345;
 float stickman_mark=12347;
 float blank=54321;
 float end_arb=5432;
+float end_move=8765;
 
 // IMPORTANT VARIABLES
 int uwait=50000;
@@ -206,31 +209,40 @@ void draw_screen(float *curr_screen[SCR],int spots,int color){		//reads thrugh t
 		}
 	}
 }
-void perform_action(char a){
+void perform_action(float *move_holder[STICKS*max_frames],float *curr_screen[SCR],char a,int stick){
 	switch(a){
 		FILE *walker;
 		case 'd': 
+		case 'a':
 			if((walker=fopen("Walk.mot","r"))==NULL){
 				printf("file couldnt be opened");
 			}else{
+				if(curr_screen[0][8]<.1){
 				int stop;
 				fscanf(walker,"%d ",&stop);
 				int i,j;
-				for(j=1;j<stop;j++){
+				for(j=0;j<stop;j++){
 					for(i=0;i<OBJ;i++){
 						float f;
 						fscanf(walker,"%f ",&f);
-						int m=rand()%1000;
-						int n=rand()%600;
-						gfx_point(m,n);gfx_flush();
-						printf("%f ",f);
+						move_holder[(stick-1)*max_frames+j][i]=(a=='a'?-f:f);	
+						int place=0; 		 //end_cscreen(curr_screen,stick,stickman_mark);
+						curr_screen[place][8]=1;
 					}
 					fscanf(walker,"\n");
-					printf("\n");
 				}
+				move_holder[(stick-1)*max_frames+j][0]=end_move;
 				fclose(walker);
+				}
 			}
 		break;
+	}
+	int F;
+	for(F=0;F<50;F++){
+		if(gfx_event_waiting()==1){
+			char a;
+			a=gfx_wait();
+		}
 	}
 }
 void initialize_level(float *curr_screen[SCR]){
@@ -246,10 +258,57 @@ void initialize_level(float *curr_screen[SCR]){
 				float f;
 				fscanf(level,"%f ",&f);
 				curr_screen[j][i]=f;
-			}
+		}
 			fscanf(level,"\n");
 		}
 	}	
+}
+int total_cscreen(float *curr_screen[SCR],int search){
+	int F,tot=0;
+	for(F=0;F<end_cscreen(curr_screen,1,end_curr_screen);F++){
+		if(curr_screen[F][0]+1>search && curr_screen[F][0]-1<search){
+			tot++;
+		}
+	}
+	return tot;
+}
+void back_to_normal(float *curr_screen[SCR],int F){
+	FILE *norm;
+	if((norm=fopen("norm.man","r"))==NULL){
+		printf("file couldnt be opened");
+	}else{
+		float n;
+		fscanf(norm,"%f ",&n);
+		int M;
+		for(M=0;M<OBJ;M++){
+			float f;
+			fscanf(norm,"%f ",&f);
+			if(M>=stickdesc){
+				curr_screen[F][M]=f;
+			}
+		}
+		fclose(norm);
+	}
+}
+void saved_action_enforce(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
+	int F;
+	for(F=0;F<end_cscreen(curr_screen,1,end_curr_screen);F++){
+		if(curr_screen[F][0]+1>stickman_mark && curr_screen[F][0]-1<stickman_mark && curr_screen[F][8]>0.1){
+			int M;
+			for(M=0;M<OBJ;M++){
+				curr_screen[F][M]+=move_holder[(int)((curr_screen[F][9]-1)*max_frames+curr_screen[F][8])-1][M];
+			}
+			if(move_holder[(int)(curr_screen[F][8]+1)][0]==end_move){
+				back_to_normal(curr_screen,F);
+				curr_screen[F][8]=0;
+			}else{
+				curr_screen[F][8]++;
+			}
+		}
+	}
+}
+void calc_next_screen(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
+	saved_action_enforce(curr_screen,move_holder);	
 }
 int main(void){
 	float xmax=1000,ymax=600;
@@ -261,13 +320,17 @@ int main(void){
 	}
 	curr_screen[0][0]=end_curr_screen;
 	initialize_level(curr_screen);
+	float *move_holder[STICKS*max_frames];
+	for(F=0;F<STICKS*max_frames;F++){
+		move_holder[F]=malloc(OBJ*sizeof(float*));
+	}
 	char a;
 	while(1){
 		if(gfx_event_waiting()==1){
 			a=gfx_wait();
-			perform_action(a);
+			perform_action(move_holder,curr_screen,a,1);
 		}
-//		calc_next_screen(curr_screen);
+		calc_next_screen(curr_screen,move_holder);
 		draw_screen(curr_screen,0,250);
 		gfx_flush();
 		usleep(uwait);

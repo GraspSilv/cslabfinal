@@ -41,6 +41,7 @@ int ncells=0;
 float xcurrent=0;
 int stickdesc=20;
 int arbdesc=20;
+int nstickmen=0;
 
 // MEMORY
 float *saver[MEM];
@@ -249,6 +250,7 @@ int end_cscreen(float *curr_screen[SCR],int n,float search){	//tells which eleme
 	return --iter;
 }
 void add_stickman(float *curr_screen[SCR],float xcent,float ycent,int length){			//just adds a stickman to the screen
+	nstickmen++;
 	float sman[SIZE]={5*M_PI/4+.1,11*M_PI/8,0,0,7*M_PI/4-.1,13*M_PI/8,0,0,M_PI/2,5*M_PI/4+.1,11*M_PI/8,0,0,7*M_PI/4-.1,13*M_PI/8,0,0,M_PI/2};
 	float filled_sman[SIZE]; 
 	fill(sman,filled_sman);
@@ -261,7 +263,8 @@ void add_stickman(float *curr_screen[SCR],float xcent,float ycent,int length){		
 	curr_screen[start][5]=0;    //yvelocity
 	curr_screen[start][6]=0;    //xacc
 	curr_screen[start][7]=0;    //yacc
-	curr_screen[start][8]=0;    //this is what gives information about saved sequences.				
+	curr_screen[start][8]=0;    //this is what gives information about saved sequences.
+	curr_screen[start][9]=nstickmen;
 	int F;
 	for(F=0;F<SIZE;F++){
 		curr_screen[start][stickdesc+F]=filled_sman[F];
