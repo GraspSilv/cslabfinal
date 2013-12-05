@@ -30,7 +30,7 @@ float blank=54321;
 float end_arb=5432;
 
 // IMPORTANT VARIABLES
-int wait=50000;
+int uwait=50000;
 int ncap=0;
 int ncells=0;
 float xcurrent=0;
@@ -231,7 +231,24 @@ void perform_action(char a){
 		break;
 	}
 }
-			
+void initialize_level(float *curr_screen[SCR]){
+	FILE *level;
+	if((level=fopen("one.lev","r"))==NULL){
+		printf("file couldnt be opened");
+	}else{
+		int i,j;
+		for(j=0;j<2;j++){
+			for(i=0;i<OBJ;i++){
+				float f;
+				fscanf(level,"%f ",&f);
+				curr_screen[j][i]=f;
+				printf("%f ",curr_screen[j][i]);
+			}
+			fscanf(level,"\n");
+			printf("\n");
+		}
+	}	
+}
 int main(void){
 	float xmax=1000,ymax=600;
 	gfx_open(xmax,ymax,"hey");
@@ -241,7 +258,7 @@ int main(void){
 		curr_screen[F]=malloc(OBJ*sizeof(float*));
 	}
 	curr_screen[0][0]=end_curr_screen;
-//	initialize_level(curr_screen);
+	initialize_level(curr_screen);
 	char a;
 	while(1){
 		if(gfx_event_waiting()==1){
@@ -250,5 +267,8 @@ int main(void){
 		}
 //		calc_next_screen(curr_screen);
 		draw_screen(curr_screen,0,250);
+		gfx_flush();
+		usleep(uwait);
+		gfx_clear();
 	}
 }

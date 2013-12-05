@@ -617,10 +617,21 @@ int main(int argc, char *argv[]){
 			xcurrent-=500;
 		}
 		if(c=='f'){
-			if(ncap==0){
-				
+			if(ncap==0){				
 				//copy all of curr_screen into a .lev file
-				
+				FILE *level;
+				if((level=fopen("one.lev","w"))==NULL){
+					printf("File Could not be opened");
+				}else{
+					int i,j;
+					for(j=0;j<=end_cscreen(curr_screen,1,end_curr_screen);j++){
+						for(i=0;i<OBJ;i++){
+							fprintf(level,"%f ",curr_screen[j][i]);
+						}
+						fprintf(level,"\n");
+					}
+					fclose(level);
+				}	
 			}else{
 				FILE *walker;
 				if((walker=fopen("Walk.mot","w"))==NULL){
