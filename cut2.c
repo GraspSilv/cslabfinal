@@ -300,6 +300,7 @@ void saved_action_enforce(float *curr_screen[SCR],float *move_holder[STICKS*max_
 			}
 			if(move_holder[(int)(curr_screen[F][8]+1)][0]==end_move){
 				back_to_normal(curr_screen,F);
+				curr_screen[F][2]=500;
 				curr_screen[F][8]=0;
 			}else{
 				curr_screen[F][8]++;
