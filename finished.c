@@ -42,7 +42,7 @@ float xcurrent=0;
 int stickdesc=20;
 int arbdesc=20;
 int nstickmen=0;
-int nweapons;
+int nweapons=3;
 
 // MEMORY
 float *saver[MEM];

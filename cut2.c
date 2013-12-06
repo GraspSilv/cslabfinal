@@ -39,6 +39,7 @@ int ncells=0;
 float xcurrent=0;
 int stickdesc=20;
 int arbdesc=20;
+int nweapons=3;
 
 void draw_width(float width, float x,float y,float nx,float ny){				//draws thicker lines
 	int M;								
@@ -212,6 +213,11 @@ void draw_screen(float *curr_screen[SCR],int spots,int color){		//reads thrugh t
 void perform_action(float *move_holder[STICKS*max_frames],float *curr_screen[SCR],char a,int stick){
 	switch(a){
 		FILE *walker;
+		case 'w':
+			if(curr_screen[0][2]>510){
+				curr_screen[0][5]=-30;
+			}
+		break;
 		case 1:
 			
 		case 'd': 
@@ -303,7 +309,7 @@ void saved_action_enforce(float *curr_screen[SCR],float *move_holder[STICKS*max_
 			}
 			if(move_holder[(int)(curr_screen[F][8]+1)][0]==end_move){
 				back_to_normal(curr_screen,F);
-				curr_screen[F][2]=510;
+//				curr_screen[F][2]=510;
 				curr_screen[F][8]=0;
 			}else{
 				curr_screen[F][8]++;
@@ -311,8 +317,33 @@ void saved_action_enforce(float *curr_screen[SCR],float *move_holder[STICKS*max_
 		}
 	}
 }
+void check_velocities(float *curr_screen[SCR]){
+	int F;
+	for(F=0;F<end_cscreen(curr_screen,1,end_curr_screen);F++){
+		if(curr_screen[F][0]+1>stickman_mark && curr_screen[F][0]-1<stickman_mark){
+			curr_screen[F][5]+=curr_screen[F][7];
+			curr_screen[F][4]+=curr_screen[F][6];
+			curr_screen[F][2]+=curr_screen[F][5];
+			curr_screen[F][1]+=curr_screen[F][4];
+			if(curr_screen[F][5]>0 && curr_screen[F][2]>510){
+				curr_screen[F][2]=510;
+				curr_screen[F][5]=0;
+				curr_screen[F][7]=0;
+			}
+			else if(curr_screen[F][2]<510){
+				curr_screen[F][7]=3;
+			}
+		}else if(curr_screen[F][0]+1>regular && curr_screen[F][0]-1<regular){
+			curr_screen[F][4]+=curr_screen[F][6];
+			curr_screen[F][3]+=curr_screen[F][5];
+			curr_screen[F][2]+=curr_screen[F][4];
+			curr_screen[F][1]+=curr_screen[F][3];
+		}
+	}
+}
 void calc_next_screen(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
 	saved_action_enforce(curr_screen,move_holder);	
+	check_velocities(curr_screen);
 }
 int main(void){
 	float xmax=1000,ymax=600;
