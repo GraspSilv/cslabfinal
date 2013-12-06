@@ -212,6 +212,8 @@ void draw_screen(float *curr_screen[SCR],int spots,int color){		//reads thrugh t
 void perform_action(float *move_holder[STICKS*max_frames],float *curr_screen[SCR],char a,int stick){
 	switch(a){
 		FILE *walker;
+		case 1:
+			
 		case 'd': 
 		case 'a':
 			if((walker=fopen(a=='d'?"Walk.mot":"Back.mot","r"))==NULL){
@@ -236,6 +238,7 @@ void perform_action(float *move_holder[STICKS*max_frames],float *curr_screen[SCR
 				}
 			}
 		break;
+			
 	}
 	int F;
 	for(F=0;F<50;F++){

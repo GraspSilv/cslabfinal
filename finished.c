@@ -42,6 +42,7 @@ float xcurrent=0;
 int stickdesc=20;
 int arbdesc=20;
 int nstickmen=0;
+int nweapons;
 
 // MEMORY
 float *saver[MEM];
@@ -270,7 +271,10 @@ void add_stickman(float *curr_screen[SCR],float xcent,float ycent,int length){		
 		curr_screen[start][stickdesc+F]=filled_sman[F];
 	}
 	curr_screen[start][stickdesc+SIZE]=new_object;
-	curr_screen[start+1][0]=end_curr_screen;
+	for(F=1;F<=nweapons;F++){
+		curr_screen[start+F][0]=blank;
+	}
+	curr_screen[start+nweapons+1][0]=end_curr_screen;
 }
 int check_arb_point(float x,float y,float new[OBJ]){			//checks an arbitrary drawing to see if you clicked one of its spots.
 	int end=end_obj(new,1,end_arb);
@@ -467,6 +471,8 @@ void draw_new(float new[OBJ]){
 			new[5]=0;	//xacc
 			new[6]=0;	//yacc
 			new[7]=0;	//circular velocity
+			new[8]=0;	//which stickman is holding the object
+			new[9]=0;	//angle at which the stickman is holding the object
 			new[arbdesc]=end_arb;
 		}	
 	}
