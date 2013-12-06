@@ -619,11 +619,11 @@ int main(int argc, char *argv[]){
 		if(c=='l' && xcurrent>490){
 			xcurrent-=500;
 		}
-		if(c=='f'){
+		if(c=='f'||c=='g'){
 			if(ncap==0){				
 				//copy all of curr_screen into a .lev file
 				FILE *level;
-				if((level=fopen("one.lev","w"))==NULL){
+				if((level=fopen(c=='g'?"norm.man":"one.lev","w"))==NULL){
 					printf("File Could not be opened");
 				}else{
 					fprintf(level,"%d ",end_cscreen(curr_screen,1,end_curr_screen));
@@ -638,7 +638,7 @@ int main(int argc, char *argv[]){
 				}	
 			}else{
 				FILE *walker;
-				if((walker=fopen("Walk.mot","w"))==NULL){
+				if((walker=fopen("Back.mot","w"))==NULL){
 					printf("File Could not be opened");
 				}else{
 					fprintf(walker,"%d ",ncap);

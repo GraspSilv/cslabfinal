@@ -214,7 +214,7 @@ void perform_action(float *move_holder[STICKS*max_frames],float *curr_screen[SCR
 		FILE *walker;
 		case 'd': 
 		case 'a':
-			if((walker=fopen("Walk.mot","r"))==NULL){
+			if((walker=fopen(a=='d'?"Walk.mot":"Back.mot","r"))==NULL){
 				printf("file couldnt be opened");
 			}else{
 				if(curr_screen[0][8]<.1){
@@ -225,7 +225,7 @@ void perform_action(float *move_holder[STICKS*max_frames],float *curr_screen[SCR
 					for(i=0;i<OBJ;i++){
 						float f;
 						fscanf(walker,"%f ",&f);
-						move_holder[(stick-1)*max_frames+j][i]=(a=='a'?-f:f);	
+						move_holder[(stick-1)*max_frames+j][i]=f;	
 						int place=0; 		 //end_cscreen(curr_screen,stick,stickman_mark);
 						curr_screen[place][8]=1;
 					}
@@ -300,7 +300,7 @@ void saved_action_enforce(float *curr_screen[SCR],float *move_holder[STICKS*max_
 			}
 			if(move_holder[(int)(curr_screen[F][8]+1)][0]==end_move){
 				back_to_normal(curr_screen,F);
-				curr_screen[F][2]=500;
+				curr_screen[F][2]=510;
 				curr_screen[F][8]=0;
 			}else{
 				curr_screen[F][8]++;
