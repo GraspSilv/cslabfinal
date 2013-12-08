@@ -273,6 +273,7 @@ void initialize_level(float *curr_screen[SCR]){
 		}
 	}	
 }
+//total number of a given items on screen
 int total_cscreen(float *curr_screen[SCR],int search){
 	int F,tot=0;
 	for(F=0;F<end_cscreen(curr_screen,1,end_curr_screen);F++){
@@ -319,14 +320,27 @@ void saved_action_enforce(float *curr_screen[SCR],float *move_holder[STICKS*max_
 	}
 }
 void check_velocities(float *curr_screen[SCR]){
-	int F;
+	int F,G;
 	for(F=0;F<end_cscreen(curr_screen,1,end_curr_screen);F++){
 		if(curr_screen[F][0]+1>stickman_mark && curr_screen[F][0]-1<stickman_mark){
+			for (G = 0; G < end_cscreen(curr_screen,1,end_curr_screen);G++){
+				if(curr_screen[G][0]-1>stickman_mark || curr_screen[G][0]+1<stickman_mark){
+					if (abs(curr_screen[F][1] - curr_screen[G][1]) < 15){
+						curr_screen[F][4] = 0;
+						curr_screen[F][6] = 0;
+					}
+					if (abs(curr_screen[F][2] - curr_screen[G][2]) < 90){
+						curr_screen[F][5] = 0;
+						curr_screen[F][7] = 0;
+					}
+				}
+			}
 			curr_screen[F][5]+=curr_screen[F][7];
 			curr_screen[F][4]+=curr_screen[F][6];
 			curr_screen[F][2]+=curr_screen[F][5];
 			curr_screen[F][1]+=curr_screen[F][4];
 			if(curr_screen[F][5]>0 && curr_screen[F][2]>510){
+				//makes sure that stickman does not go below the threshold
 				curr_screen[F][2]=510;
 				curr_screen[F][5]=0;
 				curr_screen[F][7]=0;
@@ -342,6 +356,8 @@ void check_velocities(float *curr_screen[SCR]){
 		}
 	}
 }
+
+
 void calc_next_screen(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
 	saved_action_enforce(curr_screen,move_holder);	
 	check_velocities(curr_screen);
