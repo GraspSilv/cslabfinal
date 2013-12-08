@@ -4,6 +4,7 @@
 #include "gfx.h"
 #include <unistd.h>
 #include <math.h>
+#include <strings.h>
 #define SIZE 18
 #define SCR 1000
 #define OBJ 500
@@ -215,7 +216,7 @@ void perform_action(float *move_holder[STICKS*max_frames],float *curr_screen[SCR
 		FILE *walker;
 		case 'w':
 			if(curr_screen[0][2]>510){
-				curr_screen[0][5]=-30;
+				curr_screen[0][5]=-20;
 			}
 		break;
 		case 1:
@@ -331,7 +332,7 @@ void check_velocities(float *curr_screen[SCR]){
 				curr_screen[F][7]=0;
 			}
 			else if(curr_screen[F][2]<510){
-				curr_screen[F][7]=3;
+				curr_screen[F][7]=2;
 			}
 		}else if(curr_screen[F][0]+1>regular && curr_screen[F][0]-1<regular){
 			curr_screen[F][4]+=curr_screen[F][6];
