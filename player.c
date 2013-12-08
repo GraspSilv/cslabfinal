@@ -323,22 +323,6 @@ void check_velocities(float *curr_screen[SCR]){
 	int F,G;
 	for(F=0;F<end_cscreen(curr_screen,1,end_curr_screen);F++){
 		if(curr_screen[F][0]+1>stickman_mark && curr_screen[F][0]-1<stickman_mark){
-			for (G = 0; G < end_cscreen(curr_screen,1,end_curr_screen);G++){
-				if(curr_screen[G][0]-1>stickman_mark || curr_screen[G][0]+1<stickman_mark){
-					if (abs(curr_screen[F][1] - curr_screen[G][1]) < 15){
-						curr_screen[F][4] = 0;
-						curr_screen[F][6] = 0;
-					}
-					if (abs(curr_screen[F][2] - curr_screen[G][2]) < 90){
-						curr_screen[F][5] = 0;
-						curr_screen[F][7] = 0;
-					}
-				}
-			}
-			curr_screen[F][5]+=curr_screen[F][7];
-			curr_screen[F][4]+=curr_screen[F][6];
-			curr_screen[F][2]+=curr_screen[F][5];
-			curr_screen[F][1]+=curr_screen[F][4];
 			if(curr_screen[F][5]>0 && curr_screen[F][2]>510){
 				//makes sure that stickman does not go below the threshold
 				curr_screen[F][2]=510;
@@ -348,6 +332,20 @@ void check_velocities(float *curr_screen[SCR]){
 			else if(curr_screen[F][2]<510){
 				curr_screen[F][7]=2;
 			}
+			for (G = 0; G < end_cscreen(curr_screen,1,end_curr_screen);G++){
+				if(curr_screen[G][0]-1>stickman_mark || curr_screen[G][0]+1<stickman_mark){
+					if (abs(curr_screen[F][1] - curr_screen[G][1]) < 15 && abs(curr_screen[F][2] - curr_screen[G][2]) < 95){
+						curr_screen[F][4] = 0;
+						curr_screen[F][6] = 0;
+						curr_screen[F][5] = 0;
+						curr_screen[F][7] = 0;
+					}
+				}
+			}
+			curr_screen[F][5]+=curr_screen[F][7];
+			curr_screen[F][4]+=curr_screen[F][6];
+			curr_screen[F][2]+=curr_screen[F][5];
+			curr_screen[F][1]+=curr_screen[F][4];
 		}else if(curr_screen[F][0]+1>regular && curr_screen[F][0]-1<regular){
 			curr_screen[F][4]+=curr_screen[F][6];
 			curr_screen[F][3]+=curr_screen[F][5];
