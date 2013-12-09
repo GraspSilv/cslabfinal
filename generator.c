@@ -615,11 +615,8 @@ int main(int argc, char *argv[]){
 			for(M=0;M<end_cscreen(curr_screen,1,end_curr_screen)+1;M++){
 				for(N=0;N<OBJ;N++){
 					saver[M+ncells][N]=curr_screen[M][N];
-					printf("%f ",curr_screen[M][N]);
 				}
-				printf("\n");
 			}
-			printf("\n\n\n");
 			ncap++;
 			ncells+=1+end_cscreen(curr_screen,1,end_curr_screen);
 		}
@@ -665,7 +662,9 @@ int main(int argc, char *argv[]){
 					int i,j;
 					for(j=0;j<=end_cscreen(curr_screen,1,end_curr_screen);j++){
 						for(i=0;i<OBJ;i++){
+							fprintf(level,"%f ",curr_screen[j][i]);
 						}
+						fprintf(level,"\n");
 					}
 					fclose(level);
 				}	
@@ -678,11 +677,8 @@ int main(int argc, char *argv[]){
 					int i,j;
 					for(j=1;j<ncap;j++){
 						for(i=0;i<OBJ;i++){
-<<<<<<< HEAD
 							fprintf(walker,"%f ",saver[j*(2+nweapons)][i]-saver[j*(2+nweapons)-5][i]);
-=======
 							fprintf(walker,"%f ",saver[j*(2+nweapons)][i]-saver[j*(2+nweapons)-(2+nweapons)][i]);
->>>>>>> weapons
 						}
 						fprintf(walker,"\n");
 					}
