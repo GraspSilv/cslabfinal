@@ -32,6 +32,7 @@ float stickman_mark=12347;
 float blank=54321;
 float end_arb=5432;
 float end_move=8765;
+float weapon_change_end_move=9876;
 
 // IMPORTANT VARIABLES
 int uwait=50000;
@@ -212,36 +213,49 @@ void draw_screen(float *curr_screen[SCR],int spots,int color){		//reads thrugh t
 	}
 }
 void perform_action(float *move_holder[STICKS*max_frames],float *curr_screen[SCR],char a,int stick){
+	stick=end_cscreen(curr_screen,stick,stickman_mark);
+	char *po="Walk.mot";
 	switch(a){
 		FILE *walker;
 		case 'w':
-			if(curr_screen[0][2]>510){
-				curr_screen[0][5]=-20;
+			if(curr_screen[stick][2]>510){
+				curr_screen[stick][5]=-20;
+			}
+		break;
+		case 'e':
+			if(abs(curr_screen[stick][11])<.1){
+				curr_screen[stick][11]++;
 			}
 		break;
 		case 1:
 			
 		case 'd': 
+			if(a=='d'){
+				po="Walk.mot";
+			}
 		case 'a':
-			if((walker=fopen(a=='d'?"Walk.mot":"Back.mot","r"))==NULL){
+			if(a=='a'){
+				po="Back.mot";
+			}
+			if((walker=fopen(po,"r"))==NULL){
 				printf("file couldnt be opened");
 			}else{
-				if(curr_screen[0][8]<.1){
-				int stop;
-				fscanf(walker,"%d ",&stop);
-				int i,j;
-				for(j=0;j<stop;j++){
-					for(i=0;i<OBJ;i++){
-						float f;
-						fscanf(walker,"%f ",&f);
-						move_holder[(stick-1)*max_frames+j][i]=f;	
-						int place=0; 		 //end_cscreen(curr_screen,stick,stickman_mark);
-						curr_screen[place][8]=1;
+				if(curr_screen[stick][8]<.1){
+					int stop;
+					fscanf(walker,"%d ",&stop);
+					int i,j;
+					for(j=0;j<stop;j++){
+						for(i=0;i<OBJ;i++){
+							float f;
+							fscanf(walker,"%f ",&f);
+							move_holder[(stick)*max_frames+j][i]=f;	
+							curr_screen[stick][8]=1;
+						}
+						fscanf(walker,"\n");
 					}
-					fscanf(walker,"\n");
-				}
-				move_holder[(stick-1)*max_frames+j][0]=end_move;
-				fclose(walker);
+					move_holder[(stick)*max_frames+j][0]=end_move;
+					move_holder[(stick)*max_frames+j][1]=0;	
+					fclose(walker);
 				}
 			}
 		break;
@@ -293,7 +307,7 @@ void back_to_normal(float *curr_screen[SCR],int F){
 		for(M=0;M<OBJ;M++){
 			float f;
 			fscanf(norm,"%f ",&f);
-			if(M>=stickdesc){
+			if(M>=stickdesc && M<stickdesc+9){
 				curr_screen[F][M]=f;
 			}
 		}
@@ -310,7 +324,9 @@ void saved_action_enforce(float *curr_screen[SCR],float *move_holder[STICKS*max_
 			}
 			if(move_holder[(int)(curr_screen[F][8]+1)][0]==end_move){
 				back_to_normal(curr_screen,F);
-//				curr_screen[F][2]=510;
+				if(move_holder[(int)(curr_screen[F][8]+1)][1]==weapon_change_end_move){
+					curr_screen[F][11]=2;
+				}
 				curr_screen[F][8]=0;
 			}else{
 				curr_screen[F][8]++;
@@ -342,9 +358,62 @@ void check_velocities(float *curr_screen[SCR]){
 		}
 	}
 }
+void check_weapons(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
+	int F;
+	for(F=0;F<end_cscreen(curr_screen,1,end_curr_screen);F++){
+		if(curr_screen[F][0]+1>stickman_mark && curr_screen[F][0]-1<stickman_mark){
+			if(curr_screen[F][11]-.1<1 && curr_screen[F][11]+.1>1){
+				curr_screen[F][11]=1.5;
+				char *p;
+				if(curr_screen[F][10]<.1){
+					p="Blankput.mot";
+				}else if(curr_screen[F][10]<1.1){
+					p="Pistolput.mot";
+				}else if(curr_screen[F][10]<2.1){
+					p="Shotgunput.mot";
+				}
+				FILE *weapon;
+				if((weapon=fopen(p,"r"))==NULL){
+					printf("file couldnt be opened");
+				}else{
+					if(curr_screen[F][8]<.1){
+						int stop;
+						fscanf(weapon,"%d ",&stop);
+						int i,j;
+						for(j=0;j<stop;j++){
+							for(i=0;i<OBJ;i++){
+								float f;
+								fscanf(weapon,"%f ",&f);
+								move_holder[(int)(round((curr_screen[F][9]-1)*max_frames+j))][i]=f;	
+								curr_screen[F][8]=1;
+							}
+							fscanf(weapon,"\n");
+						}
+						move_holder[(int)round(((curr_screen[F][9]-1)*max_frames+j))][0]=end_move;
+						move_holder[(int)round(((curr_screen[F][9]-1)*max_frames+j))][1]=weapon_change_end_move;
+						fclose(weapon);
+					}
+				}
+			}else if(curr_screen[F][11]-.1<2 && curr_screen[F][11]+.1>2){
+				if(curr_screen[F][10]<.1){
+					curr_screen[F+1][0]=regular;
+				}else if(curr_screen[F][10]<1.1){
+					curr_screen[F+1][0]=blank;
+					curr_screen[F+2][0]=regular;
+				}else if(curr_screen[F][10]<2.1){
+					curr_screen[F+2][0]=blank;
+					curr_screen[F+3][0]=regular;
+				}
+				curr_screen[F][10]++;
+				curr_screen[F][11]++;
+			}
+		}
+	}
+}
 void calc_next_screen(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
 	saved_action_enforce(curr_screen,move_holder);	
 	check_velocities(curr_screen);
+	check_weapons(curr_screen,move_holder);
 }
 int main(void){
 	float xmax=1000,ymax=600;
