@@ -358,6 +358,32 @@ void check_velocities(float *curr_screen[SCR]){
 		}
 	}
 }
+void attached(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
+	int F;
+	for(F=0;F<end_cscreen(curr_screen,1,end_curr_screen);F++){
+		if(curr_screen[F][0]+1>stickman_mark && curr_screen[F][0]-1<stickman_mark){
+			float x=curr_screen[F][1],y=curr_screen[F][2],x1,y1;
+			int M;
+			for(M=0;M<15;M++){
+				x1=x+curr_screen[F][3]*cos(curr_screen[F][stickdesc+M]);
+				y1=y-curr_screen[F][3]*sin(curr_screen[F][stickdesc+M]);
+				x=x1;
+				y=y1;
+			}
+			curr_screen[F+1][1]=x;
+			curr_screen[F+1][2]=y+10;
+			if(curr_screen[F][8]>.1){
+				M=0;
+				while(curr_screen[F+1][M+arbdesc]!=end_arb){
+					curr_screen[F+1][M+arbdesc]+=move_holder[(int)((curr_screen[F][9]-1)*max_frames+curr_screen[F][8])][stickdesc+14];
+					M+=4;
+				}
+			}
+			curr_screen[F+2][1]=x-120;
+			curr_screen[F+2][2]=y+25;
+		}
+	}
+}				
 void check_weapons(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
 	int F;
 	for(F=0;F<end_cscreen(curr_screen,1,end_curr_screen);F++){
@@ -445,6 +471,7 @@ void calc_next_screen(float *curr_screen[SCR],float *move_holder[STICKS*max_fram
 	saved_action_enforce(curr_screen,move_holder);	
 	check_velocities(curr_screen);
 	check_weapons(curr_screen,move_holder);
+	attached(curr_screen,move_holder);
 }
 int main(void){
 	float xmax=1000,ymax=600;

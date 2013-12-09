@@ -655,7 +655,7 @@ int main(int argc, char *argv[]){
 			if(ncap==0){				
 				//copy all of curr_screen into a .lev file
 				FILE *level;
-				if((level=fopen(c=='g'?"shotgun.wep":"one.lev","w"))==NULL){
+				if((level=fopen(c=='g'?"pistol.wep":"one.lev","w"))==NULL){
 					printf("File Could not be opened");
 				}else{
 					fprintf(level,"%d ",end_cscreen(curr_screen,1,end_curr_screen));
