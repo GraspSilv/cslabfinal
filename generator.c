@@ -266,13 +266,39 @@ void add_stickman(float *curr_screen[SCR],float xcent,float ycent,int length){		
 	curr_screen[start][7]=0;    //yacc
 	curr_screen[start][8]=0;    //this is what gives information about saved sequences.
 	curr_screen[start][9]=nstickmen;
+	curr_screen[start][10]=0;   //this tells what weapon the stickman is using.
+	curr_screen[start][11]=0;   //has to do with the changing the weapons -- what stage of change stickman is on
 	int F;
 	for(F=0;F<SIZE;F++){
 		curr_screen[start][stickdesc+F]=filled_sman[F];
 	}
 	curr_screen[start][stickdesc+SIZE]=new_object;
-	for(F=1;F<=nweapons;F++){
-		curr_screen[start+F][0]=blank;
+	char *p;
+	int S,R;
+	FILE *wep;
+	for(S=0;S<nweapons;S++){
+		switch(S){
+			case 0:
+				p="pistol.wep";
+			break;
+			case 1:
+				p="shotgun.wep";
+			break;
+			case 2:
+				p="rpg.wep";
+			break;
+		}
+		if((wep=fopen(p,"r"))==NULL){
+			printf("cant open file");
+		}else{
+			for(R=0;R<OBJ;R++){
+				float f;
+			fscanf(wep,"%f ",&f);
+				curr_screen[start+1+S][R]=f;
+			}
+		fclose(wep);
+		curr_screen[start+1+S][0]=blank;
+		}
 	}
 	curr_screen[start+nweapons+1][0]=end_curr_screen;
 }
@@ -652,7 +678,11 @@ int main(int argc, char *argv[]){
 					int i,j;
 					for(j=1;j<ncap;j++){
 						for(i=0;i<OBJ;i++){
+<<<<<<< HEAD
 							fprintf(walker,"%f ",saver[j*(2+nweapons)][i]-saver[j*(2+nweapons)-5][i]);
+=======
+							fprintf(walker,"%f ",saver[j*(2+nweapons)][i]-saver[j*(2+nweapons)-(2+nweapons)][i]);
+>>>>>>> weapons
 						}
 						fprintf(walker,"\n");
 					}
