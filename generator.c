@@ -655,11 +655,11 @@ int main(int argc, char *argv[]){
 			if(ncap==0){				
 				//copy all of curr_screen into a .lev file
 				FILE *level;
-				if((level=fopen(c=='g'?"norm.man":"one.lev","w"))==NULL){
+				if((level=fopen(c=='g'?"pistol.wep":"one.lev","w"))==NULL){
 					printf("File Could not be opened");
 				}else{
 					fprintf(level,"%d ",end_cscreen(curr_screen,1,end_curr_screen));
-					int i,j;
+					int i,j=end_cscreen(curr_screen,1,end_curr_screen)-1;
 					for(j=0;j<=end_cscreen(curr_screen,1,end_curr_screen);j++){
 						for(i=0;i<OBJ;i++){
 							fprintf(level,"%f ",curr_screen[j][i]);
@@ -670,7 +670,7 @@ int main(int argc, char *argv[]){
 				}	
 			}else{
 				FILE *walker;
-				if((walker=fopen("Pistoltake.mot","w"))==NULL){
+				if((walker=fopen("Pistolput.mot","w"))==NULL){
 					printf("File Could not be opened");
 				}else{
 					fprintf(walker,"%d ",ncap);
