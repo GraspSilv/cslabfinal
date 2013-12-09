@@ -325,7 +325,7 @@ void saved_action_enforce(float *curr_screen[SCR],float *move_holder[STICKS*max_
 			if(move_holder[(int)(curr_screen[F][8]+1)][0]==end_move){
 				back_to_normal(curr_screen,F);
 				if(move_holder[(int)(curr_screen[F][8]+1)][1]==weapon_change_end_move){
-					curr_screen[F][11]=2;
+					curr_screen[F][11]+=.5;
 				}
 				curr_screen[F][8]=0;
 			}else{
@@ -362,15 +362,27 @@ void check_weapons(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]
 	int F;
 	for(F=0;F<end_cscreen(curr_screen,1,end_curr_screen);F++){
 		if(curr_screen[F][0]+1>stickman_mark && curr_screen[F][0]-1<stickman_mark){
-			if(curr_screen[F][11]-.1<1 && curr_screen[F][11]+.1>1){
-				curr_screen[F][11]=1.5;
+			if((curr_screen[F][11]-.1<1 && curr_screen[F][11]+.1>1)||(curr_screen[F][11]-.1<3 && curr_screen[F][11]+.1>3)){
+				curr_screen[F][11]+=.5;
 				char *p;
 				if(curr_screen[F][10]<.1){
-					p="Blankput.mot";
+					if(curr_screen[F][11]-.1<1.5 && curr_screen[F][11]+.1>1.5){
+						p="Blankput.mot";
+					}else{
+						p="Blanktake.mot";
+					}
 				}else if(curr_screen[F][10]<1.1){
-					p="Pistolput.mot";
+					if(curr_screen[F][11]-.1<1.5 && curr_screen[F][11]+.1>1.5){
+						p="Pistolput.mot";
+					}else{	
+						p="Pistoltake.mot";
+					}
 				}else if(curr_screen[F][10]<2.1){
-					p="Shotgunput.mot";
+					if(curr_screen[F][11]-.1<1.5 && curr_screen[F][11]+.1>1.5){
+						p="Shotgunput.mot";
+					}else{
+						p="Shotguntake.mot";
+					}
 				}
 				FILE *weapon;
 				if((weapon=fopen(p,"r"))==NULL){
@@ -414,6 +426,7 @@ void calc_next_screen(float *curr_screen[SCR],float *move_holder[STICKS*max_fram
 	saved_action_enforce(curr_screen,move_holder);	
 	check_velocities(curr_screen);
 	check_weapons(curr_screen,move_holder);
+	printf("%f ",curr_screen[0][11]);
 }
 int main(void){
 	float xmax=1000,ymax=600;
