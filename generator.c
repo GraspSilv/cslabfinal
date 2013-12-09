@@ -670,7 +670,7 @@ int main(int argc, char *argv[]){
 				}	
 			}else{
 				FILE *walker;
-				if((walker=fopen("Punch.mot","w"))==NULL){
+				if((walker=fopen("Pistolput.mot","w"))==NULL){
 					printf("File Could not be opened");
 				}else{
 					fprintf(walker,"%d ",ncap);
