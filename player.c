@@ -396,10 +396,10 @@ void check_velocities(float *curr_screen[SCR]){
 		}
 	}
 }
-<<<<<<< HEAD
+//<<<<<<< HEAD
 
 
-=======
+//=======
 void attached(float *curr_screen[SCR],float *move_holder[STICKS*max_frames],int fired){
 	int F;
 	for(F=0;F<end_cscreen(curr_screen,1,end_curr_screen);F++){
@@ -617,7 +617,7 @@ void aim(float *curr_screen[SCR]){
 	}
 	}
 }
->>>>>>> e5482e6412fa83e9c9b92ca9b3cae5284f9a803c
+//>>>>>>> e5482e6412fa83e9c9b92ca9b3cae5284f9a803c
 void calc_next_screen(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
 	saved_action_enforce(curr_screen,move_holder);	
 	check_velocities(curr_screen);
