@@ -24,6 +24,8 @@ void draw_arb(float new[OBJ],int spots,int color,int screen3);
 void draw_new(float new[OBJ]);
 void perform_action(float *move_holder[STICKS*max_frames],float *curr_screen[SCR],char a,int stick);
 void back_to_normal(float *curr_screen[SCR],int F,int arms);
+void attached(float *curr_screen[SCR],float *move_holder[STICKS*max_frames],int fired);
+void calc_next_screen(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]);
 
 // MARKERS
 float regular=12349;
@@ -37,13 +39,15 @@ float weapon_change_end_move=9876;
 float punch_end_move=3210;
 
 // IMPORTANT VARIABLES
-int uwait=500000;
+int uwait=50000;
 int ncap=0;
 int ncells=0;
 float xcurrent=0;
 int stickdesc=20;
 int arbdesc=20;
 int nweapons=3;
+int nbullets=4;
+int bull_vel=100;
 
 void draw_width(float width, float x,float y,float nx,float ny){				//draws thicker lines
 	int M;								
@@ -233,8 +237,10 @@ void perform_action(float *move_holder[STICKS*max_frames],float *curr_screen[SCR
 			if(a==1 && curr_screen[stick][10]<.1){
 				po="Punch.mot";
 			}else{
+				calc_next_screen(curr_screen,move_holder);
+				attached(curr_screen,move_holder,1);
 				break;
-			}
+			}			
 		case 'd': 
 			if(a=='d'){
 				po="Walk.mot";
@@ -378,7 +384,7 @@ void check_velocities(float *curr_screen[SCR]){
 		}
 	}
 }
-void attached(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
+void attached(float *curr_screen[SCR],float *move_holder[STICKS*max_frames],int fired){
 	int F;
 	for(F=0;F<end_cscreen(curr_screen,1,end_curr_screen);F++){
 		if(curr_screen[F][0]+1>stickman_mark && curr_screen[F][0]-1<stickman_mark){
@@ -394,22 +400,22 @@ void attached(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
 					y2=y;
 				}
 			}
-			float add_ang=curr_screen[F+1][arbdesc]-(curr_screen[F][stickdesc+M-1]-M_PI/2);
+			float add_ang=curr_screen[F+1][arbdesc]+(curr_screen[F][stickdesc+M-1]+M_PI/2);
 			while(add_ang>0){
 				add_ang-=2*M_PI;
 			}
 			while(add_ang<0){
 				add_ang+=2*M_PI;
-			}
-			curr_screen[F+1][1]=x;
-			curr_screen[F+1][2]=y+10;
+			}				
+			curr_screen[F+1][1]=x-10*cos(curr_screen[F+1][arbdesc]-add_ang);
+			curr_screen[F+1][2]=y-10*sin(curr_screen[F+1][arbdesc]-add_ang);
 			if(add_ang>.1 || add_ang<-.1){
 				M=0;
 				while(curr_screen[F+1][arbdesc+M]+.1<end_arb || curr_screen[F+1][arbdesc+M]-.1>end_arb){
 					curr_screen[F+1][arbdesc+M]-=add_ang;
 					M+=4;
 				}
-				add_ang=curr_screen[F+2][arbdesc]-(curr_screen[F][stickdesc+M-1]+M_PI/3);
+				add_ang=curr_screen[F+2][arbdesc]+(curr_screen[F][stickdesc+M-1]-2*M_PI/3);
 				M=0;
 				if(curr_screen[F][8]<.1){
 					while(curr_screen[F+2][arbdesc+M]+.1<end_arb || curr_screen[F+2][arbdesc+M]-.1>end_arb){
@@ -418,8 +424,44 @@ void attached(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
 					}
 				}
 			}
-			curr_screen[F+2][1]=x2+10;
-			curr_screen[F+2][2]=y2+40;
+			curr_screen[F+2][1]=x2-40*cos(curr_screen[F+2][arbdesc]-add_ang);
+			curr_screen[F+2][2]=y2-40*sin(curr_screen[F+2][arbdesc]-add_ang);
+			if(curr_screen[F][8]<.1){
+				if(fired==1){
+					int N;
+					for(N=0;N<nbullets;N++){
+						curr_screen[F+nweapons+1+N][1]=x;
+						curr_screen[F+nweapons+1+N][2]=y;
+						curr_screen[F+nweapons+1+N][0]=blank;
+					}
+					curr_screen[F+nweapons+1+(int)(curr_screen[F][12])][0]=regular;
+					if(curr_screen[F][10]<1.1){
+						curr_screen[F+nweapons+1+(int)(curr_screen[F][12])][stickdesc]=curr_screen[F+(int)(curr_screen[F][10])][arbdesc+4];
+						curr_screen[F][12]++;
+						if(curr_screen[F][12]>nbullets-1){
+							curr_screen[F][12]=0;
+						}
+					}else if(curr_screen[F][10]>1.1){
+						int iter;
+						for(iter=0;iter<3;iter++){
+							curr_screen[F+nweapons+1+(int)(curr_screen[F][12])][0]=regular;
+							float add;
+							if(iter==0){ add=-.2;}
+							if(iter==1){ add=0;}
+							if(iter==2){ add=.2;}
+							curr_screen[F+nweapons+1+(int)(curr_screen[F][12])][stickdesc]=curr_screen[F+(int)(curr_screen[F][10])][arbdesc+16]+add;
+							curr_screen[F][12]++;
+							if(curr_screen[F][12]>nbullets-1){
+								curr_screen[F][12]=0;
+							}
+						}
+					}
+					for(N=0;N<nbullets;N++){
+						curr_screen[F+nweapons+1+N][3]=bull_vel*cos(curr_screen[F+nweapons+1+N][arbdesc]);
+						curr_screen[F+nweapons+1+N][4]=bull_vel*sin(curr_screen[F+nweapons+1+N][arbdesc]);
+					}
+				}
+			}
 		}
 	}
 }				
@@ -530,21 +572,21 @@ void aim(float *curr_screen[SCR]){
 		y=y1;
 	}
 	x2+=xcurrent;
-	printf("%f %f %f %f ",x,y,x2,y2);
 	float ang;
 	if(x2-x>0){
 		ang=atan((y-y2)/(x2-x));
 	}else{
 		ang=atan((y-y2)/(x2-x))+M_PI;
 	}
-	printf("%f ",ang);
+	if(curr_screen[0][10]==2){
+		ang+=.5;
+	}
 	while(curr_screen[0][14+stickdesc]>0){
 		curr_screen[0][14+stickdesc]-=2*M_PI;
 	}
 	while(curr_screen[0][14+stickdesc]<0){
 		curr_screen[0][14+stickdesc]+=2*M_PI;
 	}
-	printf("%f ",curr_screen[0][14+stickdesc]);
 	ang-=curr_screen[0][14+stickdesc];
 	while(ang>0){
 		ang-=2*M_PI;
@@ -552,8 +594,6 @@ void aim(float *curr_screen[SCR]){
 	while(ang<0){
 		ang+=2*M_PI;
 	}
-	printf("%f ",ang);
-	printf("\n");
 	if(ang<-.1 || ang>.1){
 		for(M=9;M<17;M++){
 			curr_screen[0][stickdesc+M]+=ang;
@@ -565,7 +605,7 @@ void calc_next_screen(float *curr_screen[SCR],float *move_holder[STICKS*max_fram
 	saved_action_enforce(curr_screen,move_holder);	
 	check_velocities(curr_screen);
 	check_weapons(curr_screen,move_holder);
-	attached(curr_screen,move_holder);
+	attached(curr_screen,move_holder,0);
 	xcurr_move(curr_screen);
 	aim(curr_screen);
 }
