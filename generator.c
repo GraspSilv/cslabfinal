@@ -266,6 +266,16 @@ void add_stickman(float *curr_screen[SCR],float xcent,float ycent,int length){		
 	curr_screen[start][7]=0;    //yacc
 	curr_screen[start][8]=0;    //this is what gives information about saved sequences.
 	curr_screen[start][9]=nstickmen;
+<<<<<<< HEAD
+=======
+	curr_screen[start][10]=0;   //this tells what weapon the stickman is using.
+	curr_screen[start][11]=0;   //has to do with the changing the weapons -- what stage of change stickman is on
+	curr_screen[start][12]=0;   //what bullet hes using
+	curr_screen[start][13]=1;   //hes alive
+	curr_screen[start][14]=1;   //direction he is facing (1 is right,0 is left)
+	curr_screen[start][15]=5;   //health
+	curr_screen[start][16]=0;   //tells how long ago stickman fired a weapon
+>>>>>>> 135a8694e1f1f41b89547dae5da748e0e0fb1a1e
 	int F;
 	for(F=0;F<SIZE;F++){
 		curr_screen[start][stickdesc+F]=filled_sman[F];
@@ -644,7 +654,11 @@ int main(int argc, char *argv[]){
 				}	
 			}else{
 				FILE *walker;
+<<<<<<< HEAD
 				if((walker=fopen("Back.mot","w"))==NULL){
+=======
+				if((walker=fopen("Punchback.mot","w"))==NULL){
+>>>>>>> 135a8694e1f1f41b89547dae5da748e0e0fb1a1e
 					printf("File Could not be opened");
 				}else{
 					fprintf(walker,"%d ",ncap);
