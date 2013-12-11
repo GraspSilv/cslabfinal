@@ -26,6 +26,7 @@ void perform_action(float *move_holder[STICKS*max_frames],float *curr_screen[SCR
 void back_to_normal(float *curr_screen[SCR],int F,int arms);
 void attached(float *curr_screen[SCR],float *move_holder[STICKS*max_frames],int fired,int who);
 void calc_next_screen(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]);
+void check_weapons(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]);
 
 // MARKERS
 float regular=12349;
@@ -39,6 +40,7 @@ float weapon_change_end_move=9876;
 float punch_end_move=3210;
 
 // IMPORTANT VARIABLES
+int inarow=0;
 int right=1;
 int uwait=50000;
 int ncap=0;
@@ -287,12 +289,14 @@ void perform_action(float *move_holder[STICKS*max_frames],float *curr_screen[SCR
 		break;
 			
 	}
+	if(stick==1){
 	int F;
 	for(F=0;F<50;F++){
 		if(gfx_event_waiting()==1){
 			char a;
 			a=gfx_wait();
 		}
+	}
 	}
 }
 void initialize_level(float *curr_screen[SCR]){
@@ -503,6 +507,7 @@ void check_weapons(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]
 	for(F=0;F<end_cscreen(curr_screen,1,end_curr_screen);F++){
 		if(curr_screen[F][0]+1>stickman_mark && curr_screen[F][0]-1<stickman_mark && curr_screen[F][13]>.1){
 			if((curr_screen[F][11]-.1<1 && curr_screen[F][11]+.1>1)||(curr_screen[F][11]-.1<3 && curr_screen[F][11]+.1>3)){
+				if(curr_screen[F][8]<.1){
 				curr_screen[F][11]+=.5;
 				char *p;
 				if(curr_screen[F][10]<.1){
@@ -551,6 +556,7 @@ void check_weapons(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]
 						fclose(weapon);
 					}
 				}
+				}
 			}else if(curr_screen[F][11]-.1<2 && curr_screen[F][11]+.1>2){
 				FILE *arms;
 				if((arms=fopen("weapon.man","r"))==NULL){
@@ -580,8 +586,15 @@ void check_weapons(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]
 				}else{
 					curr_screen[F][10]++;
 				}
-			}else if(curr_screen[F][11]-.1<4 && curr_screen[F][11]+.1>4){
+			}else if(curr_screen[F][11]-.1>1.5 || curr_screen[F][11]+.1<1.5){
 				curr_screen[F][11]=0;
+			}
+			if(curr_screen[F][11]==1.5){
+				inarow++;
+			}
+			if(inarow>20){
+				curr_screen[F][11]=0;
+				inarow=0;
 			}
 		}
 	}
@@ -730,6 +743,9 @@ void kill(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
 }
 void calc_next_screen(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
 	perform_action(move_holder,curr_screen,'a',2);
+	perform_action(move_holder,curr_screen,'a',3);
+	perform_action(move_holder,curr_screen,'a',4);
+	perform_action(move_holder,curr_screen,'a',5);
 	saved_action_enforce(curr_screen,move_holder);	
 	check_velocities(curr_screen);
 	check_weapons(curr_screen,move_holder);
