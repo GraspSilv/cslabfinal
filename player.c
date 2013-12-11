@@ -289,12 +289,14 @@ void perform_action(float *move_holder[STICKS*max_frames],float *curr_screen[SCR
 		break;
 			
 	}
+	if(stick==1){
 	int F;
 	for(F=0;F<50;F++){
 		if(gfx_event_waiting()==1){
 			char a;
 			a=gfx_wait();
 		}
+	}
 	}
 }
 void initialize_level(float *curr_screen[SCR]){
