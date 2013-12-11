@@ -274,6 +274,8 @@ void add_stickman(float *curr_screen[SCR],float xcent,float ycent,int length){		
 	curr_screen[start][14]=1;   //direction he is facing (1 is right,0 is left)
 	curr_screen[start][15]=5;   //health
 	curr_screen[start][16]=0;   //tells how long ago stickman fired a weapon
+	curr_screen[start][17]=0;   //tells how long a stickman has been alive for
+	curr_screen[start][18]=0;    //tells how many times he died
 	int F;
 	for(F=0;F<SIZE;F++){
 		curr_screen[start][stickdesc+F]=filled_sman[F];
@@ -679,7 +681,7 @@ int main(int argc, char *argv[]){
 				}	
 			}else{
 				FILE *walker;
-				if((walker=fopen("Punchback.mot","w"))==NULL){
+				if((walker=fopen("Slowback.mot","w"))==NULL){
 					printf("File Could not be opened");
 				}else{
 					fprintf(walker,"%d ",ncap);
