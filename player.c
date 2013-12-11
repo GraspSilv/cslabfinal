@@ -860,6 +860,7 @@ int main(void){
 	for(F=0;F<STICKS*max_frames;F++){
 		move_holder[F]=malloc(OBJ*sizeof(float*));
 	}
+	int full = 255;
 	char a;
 	while(1){
 		if(gfx_event_waiting()==1){
@@ -868,6 +869,15 @@ int main(void){
 		}
 		calc_next_screen(curr_screen,move_holder);
 		draw_screen(curr_screen,0,250);
+		gfx_color(255,0,0);
+		draw_width(3, 30, 30, 30, 45);
+		draw_width(3, 20, 38, 40, 38);
+		draw_width(3, 60, 38, 60+curr_screen[0][15]*40, 38);
+//		if (curr_screen[0][15] == 0) {
+//			draw_width(5, 300, 200, 500, 500);
+//			draw_width(5, 300, 500, 500, 300);
+		}
+		gfx_color(full,full,full);
 		gfx_flush();
 		usleep(uwait);
 		gfx_clear();
