@@ -742,10 +742,6 @@ void kill(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
 	}
 }
 void calc_next_screen(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
-	perform_action(move_holder,curr_screen,'a',2);
-	perform_action(move_holder,curr_screen,'a',3);
-	perform_action(move_holder,curr_screen,'a',4);
-	perform_action(move_holder,curr_screen,'a',5);
 	saved_action_enforce(curr_screen,move_holder);	
 	check_velocities(curr_screen);
 	check_weapons(curr_screen,move_holder);
