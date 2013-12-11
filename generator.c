@@ -43,7 +43,6 @@ int stickdesc=20;
 int arbdesc=20;
 int nstickmen=0;
 int nweapons=3;
-int nbullets=4;
 
 // MEMORY
 float *saver[MEM];
@@ -267,45 +266,15 @@ void add_stickman(float *curr_screen[SCR],float xcent,float ycent,int length){		
 	curr_screen[start][7]=0;    //yacc
 	curr_screen[start][8]=0;    //this is what gives information about saved sequences.
 	curr_screen[start][9]=nstickmen;
-	curr_screen[start][10]=0;   //this tells what weapon the stickman is using.
-	curr_screen[start][11]=0;   //has to do with the changing the weapons -- what stage of change stickman is on
-	curr_screen[start][12]=0;   //what bullet hes using
 	int F;
 	for(F=0;F<SIZE;F++){
 		curr_screen[start][stickdesc+F]=filled_sman[F];
 	}
 	curr_screen[start][stickdesc+SIZE]=new_object;
-	char *p;
-	int S,R;
-	FILE *wep;
-	for(S=0;S<nweapons+nbullets;S++){
-		switch(S){
-			case 0:
-				p="pistol.wep";
-			break;
-			case 1:
-				p="shotgun.wep";
-			break;
-			case 2:
-				p="rpg.wep";
-			break;
-			default:
-				p="bullet.wep";
-			break;
-		}
-		if((wep=fopen(p,"r"))==NULL){
-			printf("cant open file");
-		}else{
-			for(R=0;R<OBJ;R++){
-				float f;
-			fscanf(wep,"%f ",&f);
-				curr_screen[start+1+S][R]=f;
-			}
-		fclose(wep);
-		curr_screen[start+1+S][0]=blank;
-		}
+	for(F=1;F<=nweapons;F++){
+		curr_screen[start+F][0]=blank;
 	}
-	curr_screen[start+nweapons+nbullets+1][0]=end_curr_screen;
+	curr_screen[start+nweapons+1][0]=end_curr_screen;
 }
 int check_arb_point(float x,float y,float new[OBJ]){			//checks an arbitrary drawing to see if you clicked one of its spots.
 	int end=end_obj(new,1,end_arb);
@@ -500,7 +469,7 @@ void draw_new(float new[OBJ]){
 			new[3]=0;	//xvelocity
 			new[4]=0;	//yvelocity
 			new[5]=0;	//xacc
-			new[6]=2;	//yacc
+			new[6]=0;	//yacc
 			new[7]=0;	//circular velocity
 			new[8]=0;	//which stickman is holding the object
 			new[9]=0;	//angle at which the stickman is holding the object
@@ -660,11 +629,11 @@ int main(int argc, char *argv[]){
 			if(ncap==0){				
 				//copy all of curr_screen into a .lev file
 				FILE *level;
-				if((level=fopen(c=='g'?"bullet.wep":"one.lev","w"))==NULL){
+				if((level=fopen(c=='g'?"norm.man":"one.lev","w"))==NULL){
 					printf("File Could not be opened");
 				}else{
 					fprintf(level,"%d ",end_cscreen(curr_screen,1,end_curr_screen));
-					int i,j=end_cscreen(curr_screen,1,end_curr_screen)-1;
+					int i,j;
 					for(j=0;j<=end_cscreen(curr_screen,1,end_curr_screen);j++){
 						for(i=0;i<OBJ;i++){
 							fprintf(level,"%f ",curr_screen[j][i]);
@@ -675,14 +644,14 @@ int main(int argc, char *argv[]){
 				}	
 			}else{
 				FILE *walker;
-				if((walker=fopen("Pistolput.mot","w"))==NULL){
+				if((walker=fopen("Back.mot","w"))==NULL){
 					printf("File Could not be opened");
 				}else{
 					fprintf(walker,"%d ",ncap);
 					int i,j;
 					for(j=1;j<ncap;j++){
 						for(i=0;i<OBJ;i++){
-							fprintf(walker,"%f ",saver[j*(2+nweapons+nbullets)][i]-saver[j*(2+nweapons+nbullets)-(2+nweapons+nbullets)][i]);
+							fprintf(walker,"%f ",saver[j*2][i]-saver[j*2-2][i]);
 						}
 						fprintf(walker,"\n");
 					}
