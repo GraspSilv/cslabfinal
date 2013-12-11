@@ -706,6 +706,7 @@ void death(float *curr_screen[SCR]){
 								if(dist(x1,y1,x,y)<(curr_screen[M][3])/2.5){
 									curr_screen[F+nweapons+1+N][0]=blank;
 									curr_screen[M][15]-=2;
+									doneb=1;
 								}
 							}
 						}
@@ -761,7 +762,7 @@ void reset_stickman(float *curr_screen[SCR]){
 			float sman[SIZE]={5*M_PI/4+.1,11*M_PI/8,0,0,7*M_PI/4-.1,13*M_PI/8,0,0,M_PI/2,5*M_PI/4+.1,11*M_PI/8,0,0,7*M_PI/4-.1,13*M_PI/8,0,0,M_PI/2};
 			float filled_sman[SIZE]; 
 			fill(sman,filled_sman);
-			int a=rand()%3000;
+			int a=rand()%3700;
 			curr_screen[start][0]=stickman_mark;
 			curr_screen[start][1]=a-200;
 			curr_screen[start][2]=-100;
@@ -873,7 +874,7 @@ int main(void){
 			scount=count;
 			no=1;
 		}
-		if(count-scount>30){
+		if(count-scount>80){
 			break;
 		}
 		calc_next_screen(curr_screen,move_holder);
@@ -882,9 +883,9 @@ int main(void){
 		draw_width(3, 30, 30, 30, 45);
 		draw_width(3, 20, 38, 40, 38);
 		draw_width(3, 60, 38, 60+curr_screen[0][15]*40, 38);
-//		if (curr_screen[0][15] == 0) {
-//			draw_width(5, 300, 200, 500, 500);
-//			draw_width(5, 300, 500, 500, 300);
+		if (curr_screen[0][15] == 0) {
+			draw_width(20, 200, 150, 800, 450);
+			draw_width(20, 800, 150, 200, 450);
 		}
 		gfx_color(full,full,full);
 		gfx_flush();
