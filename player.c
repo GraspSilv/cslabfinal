@@ -761,11 +761,10 @@ void reset_stickman(float *curr_screen[SCR]){
 			float sman[SIZE]={5*M_PI/4+.1,11*M_PI/8,0,0,7*M_PI/4-.1,13*M_PI/8,0,0,M_PI/2,5*M_PI/4+.1,11*M_PI/8,0,0,7*M_PI/4-.1,13*M_PI/8,0,0,M_PI/2};
 			float filled_sman[SIZE]; 
 			fill(sman,filled_sman);
-			int a=rand()%500;
-			int b=rand()%2;
+			int a=rand()%3000;
 			curr_screen[start][0]=stickman_mark;
-			curr_screen[start][1]=(b==0?2000+a:-500-a);
-			curr_screen[start][2]=300;
+			curr_screen[start][1]=a-200;
+			curr_screen[start][2]=-100;
 			curr_screen[start][3]=50;
 			curr_screen[start][4]=0;    //xvelocity
 			curr_screen[start][5]=0;    //yvelocity
@@ -835,6 +834,7 @@ void stickman_ai(float *move_holder[SCR],float *curr_screen[SCR]){
 	}
 }
 void calc_next_screen(float *curr_screen[SCR],float *move_holder[STICKS*max_frames]){
+	count++;
 	reset_stickman(curr_screen);
 	stickman_ai(move_holder,curr_screen);
 	saved_action_enforce(curr_screen,move_holder);	
@@ -862,10 +862,19 @@ int main(void){
 	}
 	int full = 255;
 	char a;
+	int scount=1000000;
+	int no=0;
 	while(1){
 		if(gfx_event_waiting()==1){
 			a=gfx_wait();
 			perform_action(move_holder,curr_screen,a,1);
+		}
+		if(curr_screen[0][13]<.1 && no==0){
+			scount=count;
+			no=1;
+		}
+		if(count-scount>30){
+			break;
 		}
 		calc_next_screen(curr_screen,move_holder);
 		draw_screen(curr_screen,0,250);
